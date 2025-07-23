@@ -59,7 +59,7 @@ example : (p → q ∨ r) → ((p → q) ∨ (p → r)) :=
     Or.elim (em q)
       (fun hq : q => Or.inl fun _ => hq )
       (fun hnq : ¬q =>
-        Or.inr (fun hp:p => 
+        Or.inr (fun hp:p =>
         let hqr :q ∨ r := hpqr hp;
         Or.elim (hqr)
         (fun hq : q => absurd hq hnq)
@@ -67,10 +67,27 @@ example : (p → q ∨ r) → ((p → q) ∨ (p → r)) :=
         )
       )
 
-example : ¬(p ∧ q) → ¬p ∨ ¬q := 
+example : ¬(p ∧ q) → ¬p ∨ ¬q :=
   fun hnpq : ¬(p ∧ q) =>
     Or.elim (em p)
     (fun hp: p => Or.inr (
       fun hq : q => hnpq (And.intro hp hq)
     ))
     (fun hnp : ¬p => Or.inl hnp)
+
+
+-- https://lean-lang.org/theorem_proving_in_lean4/Quantifiers-and-Equality/#quantifiers-and-equality
+
+variable (α : Type) (p q : α → Prop)
+variable (r : Prop)
+
+example : (∃ x : α, r) → r :=
+  fun ⟨ w, hr ⟩ => hr
+
+example (a : α) : r → (∃ x : α, r) :=
+  fun hr:r => ⟨a, hr⟩
+
+example : (∃ x, p x ∧ r) ↔ (∃ x, p x) ∧ r :=
+  Iff.intro
+  (fun ⟨w, hp, hr⟩ => ⟨⟨w, hp⟩ , hr⟩ )
+  (fun ⟨⟨w, hp⟩, hr⟩ => ⟨w, hp, hr⟩)
