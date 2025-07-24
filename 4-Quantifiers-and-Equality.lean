@@ -27,7 +27,7 @@ example : (∃ x, p x ∨ q x) ↔ (∃ x, p x) ∨ (∃ x, q x) :=
 
 open Classical
 
-example : (∀ x, p x) ↔ ¬ (∃ x, ¬ p x) :=
+def myForall : (∀ x, p x) ↔ ¬ (∃ x, ¬ p x) :=
   Iff.intro
   (fun hp =>
     (fun ⟨w, hnp⟩ =>
@@ -39,4 +39,45 @@ example : (∀ x, p x) ↔ ¬ (∃ x, ¬ p x) :=
         (fun hnp : ¬ p x =>
           show False from h ⟨x, hnp⟩
         )
+  )
+
+def myExists (h : ¬ ∀ x, ¬ p x) : ∃ x, p x :=
+  byContradiction
+    (fun h1 : ¬ ∃ x, p x =>
+      have h2 : ∀ x, ¬ p x :=
+        fun x =>
+        fun h3 : p x =>
+        have h4 : ∃ x, p x := ⟨x, h3⟩
+        show False from h1 h4
+      show False from h h2)
+
+example : (∃ x, p x) ↔ ¬ (∀ x, ¬ p x) :=
+  Iff.intro
+  (fun ⟨w, hp⟩ =>
+    (fun a:(∀ x, ¬ p x) => show False from (a w) hp ) )
+  (myExists α p)
+
+
+example : (¬ ∃ x, p x) ↔ (∀ x, ¬ p x) :=
+  Iff.intro
+  (fun h : (¬ ∃ x, p x) =>
+    fun x =>
+      fun hp:p x =>
+      show False from
+      h ⟨x, hp⟩
+    )
+  (fun h: (∀ x, ¬ p x) =>
+      (fun ⟨w, hnp⟩=> (h w) hnp)
+  )
+
+  example : (¬ ∀ x, p x) ↔ (∃ x, ¬ p x) :=
+  Iff.intro
+  (fun h:(¬ ∀ x, p x) =>
+    byContradiction
+    fun nhnp: ¬(∃ x, ¬ p x)=>
+      show False from h ((myForall α p).2 nhnp)
+  )
+  (fun ⟨w, hnp⟩ =>
+    fun h: ∀ x, p x =>
+      show False from hnp (h w)
   )
