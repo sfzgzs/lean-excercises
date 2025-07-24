@@ -23,3 +23,20 @@ example : (∃ x, p x ∨ q x) ↔ (∃ x, p x) ∨ (∃ x, q x) :=
     (fun ⟨w, hp⟩ => ⟨w, Or.intro_left  (q w) hp ⟩)
     (fun ⟨w, hq⟩ => ⟨ w, Or.intro_right (p w) hq⟩)
   )
+
+
+open Classical
+
+example : (∀ x, p x) ↔ ¬ (∃ x, ¬ p x) :=
+  Iff.intro
+  (fun hp =>
+    (fun ⟨w, hnp⟩ =>
+    show False from hnp (hp w) )
+  )
+  (fun h :  ¬ (∃ x, ¬ p x) =>
+      fun x =>
+        byContradiction
+        (fun hnp : ¬ p x =>
+          show False from h ⟨x, hnp⟩
+        )
+  )
