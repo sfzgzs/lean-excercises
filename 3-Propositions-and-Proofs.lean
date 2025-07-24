@@ -74,6 +74,3 @@ example : ¬(p ∧ q) → ¬p ∨ ¬q :=
       fun hq : q => hnpq (And.intro hp hq)
     ))
     (fun hnp : ¬p => Or.inl hnp)
-
-
--- https://lean-lang.org/theorem_proving_in_lean4/Quantifiers-and-Equality/#quantifiers-and-equality
