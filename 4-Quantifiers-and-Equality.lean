@@ -58,7 +58,7 @@ example : (∃ x, p x) ↔ ¬ (∀ x, ¬ p x) :=
   (myExists α p)
 
 
-example : (¬ ∃ x, p x) ↔ (∀ x, ¬ p x) :=
+def myForall2 : (¬ ∃ x, p x) ↔ (∀ x, ¬ p x) :=
   Iff.intro
   (fun h : (¬ ∃ x, p x) =>
     fun x =>
@@ -70,7 +70,7 @@ example : (¬ ∃ x, p x) ↔ (∀ x, ¬ p x) :=
       (fun ⟨w, hnp⟩=> (h w) hnp)
   )
 
-  example : (¬ ∀ x, p x) ↔ (∃ x, ¬ p x) :=
+example : (¬ ∀ x, p x) ↔ (∃ x, ¬ p x) :=
   Iff.intro
   (fun h:(¬ ∀ x, p x) =>
     byContradiction
@@ -80,4 +80,15 @@ example : (¬ ∃ x, p x) ↔ (∀ x, ¬ p x) :=
   (fun ⟨w, hnp⟩ =>
     fun h: ∀ x, p x =>
       show False from hnp (h w)
+  )
+
+
+example : (∀ x, p x → r) ↔ (∃ x, p x) → r :=
+  Iff.intro
+  (fun h:(∀ x, p x → r) =>
+    fun ⟨w, hp⟩=> h w hp)
+  (fun h : (∃ x, p x) → r =>
+    fun x =>
+      fun hhp: p x =>
+        h ⟨x, hhp⟩
   )
