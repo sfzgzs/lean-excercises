@@ -92,3 +92,39 @@ example : (∀ x, p x → r) ↔ (∃ x, p x) → r :=
       fun hhp: p x =>
         h ⟨x, hhp⟩
   )
+
+
+example : (∀ x, p x ∧ q x) ↔ (∀ x, p x) ∧ (∀ x, q x) :=
+  Iff.intro
+  (
+    fun hpq : ∀x, p x ∧ q x =>
+      And.intro
+        (fun x => (hpq x).left)
+        (fun x => (hpq x).right)
+  )
+  (
+    fun ⟨h1, h2⟩ =>
+      fun x =>
+      And.intro
+        (h1 x)
+        (h2 x)
+  )
+
+example : (∀ x, p x → q x) → (∀ x, p x) → (∀ x, q x) :=
+  fun h : (∀ x, p x → q x) =>
+    fun h2 : (∀ x, p x) =>
+      (fun x =>
+        h x (h2 x))
+
+example : (∀ x, p x) ∨ (∀ x, q x) → ∀ x, p x ∨ q x :=
+  fun h: (∀ x, p x) ∨ (∀ x, q x) =>
+    h.elim
+    (fun h1: (∀ x, p x) => fun x => Or.intro_left (q x) (h1 x) )
+    (fun h1: (∀ x, q x) => fun x => Or.intro_right (p x) (h1 x))
+
+
+example : α → ((∀ x : α, r) ↔ r) :=
+  fun a : α =>
+    Iff.intro
+      (fun h:(∀ _ , r) =>h a)
+      (fun hr:r => fun _ => hr)
