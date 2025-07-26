@@ -123,10 +123,27 @@ example : (∀ x, p x) ∨ (∀ x, q x) → ∀ x, p x ∨ q x :=
     (fun h1: (∀ x, q x) => fun x => Or.intro_right (p x) (h1 x))
 
 
-example : α → ((∀ x : α, r) ↔ r) :=
+def indepFunc : α → ((∀ x : α, r) ↔ r) :=
   fun a : α =>
     Iff.intro
       (fun h:(∀ _ , r) =>h a)
       (fun hr:r => fun _ => hr)
 
-example : (∀ x, p x ∨ r) ↔ (∀ x, p x) ∨ r := sorry
+example : (∀ x, p x ∨ r) ↔ (∀ x, p x) ∨ r :=
+  Iff.intro
+    (fun h: (∀ x, p x ∨ r) =>
+        byCases
+        (fun hr : r => Or.intro_right (∀ x, p x) hr)
+        (fun nhr : ¬r =>
+          Or.intro_left r (fun x =>
+            match h x with
+            | Or.inl px => px
+            | Or.inr r' => False.elim (nhr r')
+          )
+        )
+    )
+    (fun h : (∀ x, p x) ∨ r =>
+      match h with
+      | Or.inl forallxp => fun x => Or.inl (forallxp x)
+      | Or.inr hr => fun _ => Or.inr hr
+    )
