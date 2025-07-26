@@ -128,3 +128,5 @@ example : α → ((∀ x : α, r) ↔ r) :=
     Iff.intro
       (fun h:(∀ _ , r) =>h a)
       (fun hr:r => fun _ => hr)
+
+example : (∀ x, p x ∨ r) ↔ (∀ x, p x) ∨ r := sorry
