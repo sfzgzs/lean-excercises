@@ -1,3 +1,4 @@
+
 variable (α : Type) (p q : α → Prop)
 variable (r : Prop)
 
@@ -147,3 +148,47 @@ example : (∀ x, p x ∨ r) ↔ (∀ x, p x) ∨ r :=
       | Or.inl forallxp => fun x => Or.inl (forallxp x)
       | Or.inr hr => fun _ => Or.inr hr
     )
+
+
+example : (∀ x, r → p x) ↔ (r → ∀ x, p x) :=
+  Iff.intro
+    (fun h : (∀ x, r → p x) =>
+      fun hr : r =>
+        fun x =>
+        (h x) hr
+    )
+  (fun hr : r → ∀ x, p x =>
+      fun x =>
+        fun hr2 : r =>
+          (hr hr2) x
+  )
+
+variable (men : Type) (barber : men)
+variable (shaves : men → men → Prop)
+
+
+def pnotp {p} : ¬(p ↔ ¬p) :=
+  fun hpnp : p ↔ ¬p =>
+    have np : ¬ p := (fun hp: p => (hpnp.mp hp) hp);
+    np (hpnp.mpr np)
+
+example (h : ∀ x : men, shaves barber x ↔ ¬ shaves x x) : False :=
+  pnotp (h barber)
+
+
+def even (n : Nat) : Prop := ∃ k : Nat, n = 2 * k
+
+def prime (n : Nat) : Prop := ¬ (∃ k ≤ n, ∃ m < n, m ≠ 1 ∧ m * k = n)
+def prime2 (n : Nat) : Prop := ∀ k : Nat, ∀ m : Nat, (k*m = n → k = 1 ∨ k = n)
+
+def infinitely_many_primes : Prop := ∀ n : Nat, ∃ m > n, prime m
+def Fermat_prime (n : Nat) : Prop := ∃ m : Nat, n = 2 ^ (2 ^ m) + 1
+def infinitely_many_Fermat_primes : Prop := ∀ n : Nat, ∃ m > n, Fermat_prime m
+def goldbach_conjecture : Prop := ∀ n > 2, (even n → ∃ x1 x2 : Nat, prime x1 ∧ prime x2 ∧ n = x1 + x2)
+def Goldbach's_weak_conjecture : Prop :=
+  ∀ n > 5, ¬ even n →
+    ∃ x1 x2 x3: Nat,
+      prime x1 ∧ prime x2 ∧ prime x3 ∧ n = x1 + x2 + x3
+def Fermat's_last_theorem : Prop :=
+  ∀ n : Nat, n > 2 →
+    ¬ ∃ a b c: Nat, a ^ n + b ^ n = c ^ n ∧ a > 0 ∧ b > 0 ∧ c > 0
