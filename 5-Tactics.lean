@@ -1,3 +1,5 @@
+-- Section 3 Revisited (+Tactics)
+
 example : p ∧ q ↔ q ∧ p := by
   apply Iff.intro  <;>
   . intro hpq
@@ -80,6 +82,43 @@ example : ¬(p ∧ q) → ¬p ∨ ¬q := by
     exact hnpq ⟨hp,hq⟩
   . left
     exact hp
+
+-- Section 4 Revisited (+Tactics)
+
+
+variable (α : Type) (p q : α → Prop)
+variable (r : Prop)
+
+example : (∃ x : α, r) → r := by
+  intro ⟨ w, hr ⟩
+  exact hr
+
+example (a : α) : r → (∃ x : α, r) := by
+  intro hr
+  exact ⟨a, hr⟩
+
+example : (∃ x, p x ∧ r) ↔ (∃ x, p x) ∧ r := by
+  apply Iff.intro
+  . intro ⟨w, hp, hr⟩
+    exact ⟨⟨w, hp⟩ , hr⟩
+  . intro ⟨⟨w, hp⟩ , hr⟩
+    exact ⟨ w, hp , hr⟩
+
+example : (∃ x, p x ∨ q x) ↔ (∃ x, p x) ∨ (∃ x, q x) := by
+  apply Iff.intro
+  . intro ⟨ w, hpq ⟩
+    apply Or.elim hpq
+    . intro hp
+      exact Or.intro_left  (∃ x, q x) ⟨w, hp⟩
+    . intro hq
+      exact Or.intro_right  (∃ x, p x) ⟨w, hq⟩
+  . intro hor
+    apply Or.elim hor
+    . intro ⟨w, hp⟩
+      exact ⟨w, Or.intro_left  (q w) hp ⟩
+    . intro ⟨w, hq⟩
+      exact ⟨w, Or.intro_right (p w) hq⟩
+
 
 example (p q r : Prop) (hp : p)
         : (p ∨ q ∨ r) ∧ (q ∨ p ∨ r) ∧ (q ∨ r ∨ p) := by
