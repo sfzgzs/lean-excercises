@@ -16,7 +16,7 @@ example : p ∨ q ↔ q ∨ p :=
       (fun hp : p => Or.intro_left q hp)
     )
 
-example : (p → q) → (¬q → ¬p) := fun hpq : p → q => fun nq : ¬ q => fun hp : p => False.elim (nq (hpq hp))
+example : (p → q) → (¬q → ¬p) := fun hpq : p → q => fun nq : ¬ q => fun hp : p => nq (hpq hp)
 
 example : p ∧ False ↔ False :=
   Iff.intro
@@ -27,8 +27,6 @@ example : p ∨ False ↔ p :=
   Iff.intro
   (fun hpf: p ∨ False => Or.elim hpf id False.elim)
   (fun hp : p => Or.intro_left False hp)
-
-axiom pqp_ax: p → q → p
 
 example : (¬p ∨ q) → (p → q) :=
   fun hpq : ¬p ∨ q =>
