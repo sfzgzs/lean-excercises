@@ -41,6 +41,20 @@ example : (¬p ∨ q) → (p → q) := by
     | inr hq => exact hq
 
 
+example : ¬p → (p → q) := by
+  intro hnp hp
+  exfalso
+  exact hnp hp
+
+
+example : p ∧ ¬q → ¬(p → q) := by
+  intro ⟨hp, hnq⟩ ptoq
+  apply hnq (ptoq hp)
+
+example : ¬(p ↔ ¬p) := by
+  intro hpnp
+  have np : ¬ p := (fun hp: p => (hpnp.mp hp) hp);
+  exact np (hpnp.mpr np)
 
 open Classical
 
@@ -58,6 +72,14 @@ example : (p → q ∨ r) → ((p → q) ∨ (p → r)) := by
     | inr hr => exact hr
 
 
+example : ¬(p ∧ q) → ¬p ∨ ¬q := by
+  intro hnpq
+  by_cases hp : p
+  . right
+    intro hq
+    exact hnpq ⟨hp,hq⟩
+  . left
+    exact hp
 
 example (p q r : Prop) (hp : p)
         : (p ∨ q ∨ r) ∧ (q ∨ p ∨ r) ∧ (q ∨ r ∨ p) := by
