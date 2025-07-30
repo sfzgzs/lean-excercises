@@ -120,6 +120,44 @@ example : (∃ x, p x ∨ q x) ↔ (∃ x, p x) ∨ (∃ x, q x) := by
       exact ⟨w, Or.intro_right (p w) hq⟩
 
 
+def myForall : (∀ x, p x) ↔ ¬ (∃ x, ¬ p x) := by
+  apply Iff.intro
+  . intro hp ⟨w, hnp⟩
+    exact hnp (hp w)
+  . intro h_cont x
+    apply byContradiction
+    intro hnp
+    exact h_cont ⟨x, hnp⟩
+
+def myExists (h : ¬ ∀ x, ¬ p x) : ∃ x, p x := by
+  apply byContradiction
+  intro h_n_exists
+  apply h
+  intro x hp
+  exact h_n_exists ⟨x, hp⟩
+
+example : (∃ x, p x) ↔ ¬ (∀ x, ¬ p x) := by
+  apply Iff.intro
+  . intro h_exist h_n_forall
+    cases h_exist with
+    | intro w pw =>
+      exact h_n_forall w pw
+  . intro n_forall
+    apply byContradiction
+    intro h_n_exists
+    apply n_forall
+    intro x px
+    exact h_n_exists ⟨x, px⟩
+
+def myForall2 : (¬ ∃ x, p x) ↔ (∀ x, ¬ p x) := by
+  apply Iff.intro
+  . intro n_exists x px
+    apply n_exists ⟨x, px⟩
+  . intro h_n_forall h_p_exists
+    cases h_p_exists with
+    | intro w hw =>
+      exact h_n_forall w hw
+
 example (p q r : Prop) (hp : p)
         : (p ∨ q ∨ r) ∧ (q ∨ p ∨ r) ∧ (q ∨ r ∨ p) := by
   exact ⟨Or.inl hp, Or.inr (Or.inl hp), Or.inr (Or.inr hp)⟩
