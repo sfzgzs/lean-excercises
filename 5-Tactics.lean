@@ -158,6 +158,48 @@ def myForall2 : (¬ ∃ x, p x) ↔ (∀ x, ¬ p x) := by
     | intro w hw =>
       exact h_n_forall w hw
 
+example : (¬ ∀ x, p x) ↔ (∃ x, ¬ p x) := by
+  apply Iff.intro
+  . intro h1
+    apply byContradiction
+    intro h2
+    apply h1
+    intro x
+    apply byContradiction
+    intro hnp
+    apply h2 ⟨x, hnp⟩
+  . intro h1 h2
+    cases h1 with
+    | intro w hw =>
+      exact hw (h2 w)
+
+example : (∀ x, p x → r) ↔ (∃ x, p x) → r := by
+  apply Iff.intro
+  . intro h1 h2
+    cases h2 with
+    | intro w hw => exact h1 w hw
+  . intro h1 x hpx
+    exact h1 ⟨x, hpx⟩
+
+
+
+example : (∀ x, p x ∧ q x) ↔ (∀ x, p x) ∧ (∀ x, q x) := by
+  apply Iff.intro
+  . intro h1
+    apply And.intro
+    . intro x
+      apply And.left (h1 x)
+    . intro x
+      apply And.right (h1 x)
+  . intro ⟨h1, h2⟩ x
+    exact ⟨h1 x, h2 x⟩
+
+
+example : (∀ x, p x → q x) → (∀ x, p x) → (∀ x, q x) := by
+  intro h1 h2 x
+  apply h1  x (h2 x)
+
+
 example (p q r : Prop) (hp : p)
         : (p ∨ q ∨ r) ∧ (q ∨ p ∨ r) ∧ (q ∨ r ∨ p) := by
   exact ⟨Or.inl hp, Or.inr (Or.inl hp), Or.inr (Or.inr hp)⟩
