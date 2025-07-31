@@ -200,6 +200,64 @@ example : (∀ x, p x → q x) → (∀ x, p x) → (∀ x, q x) := by
   apply h1  x (h2 x)
 
 
+example : (∀ x, p x) ∨ (∀ x, q x) → ∀ x, p x ∨ q x := by
+  intro h
+  cases h with
+  | inl hp =>
+    intro x
+    apply Or.inl
+    exact hp x
+  | inr hq =>
+    intro x
+    apply Or.inr
+    exact hq x
+
+def indepFunc : α → ((∀ x : α, r) ↔ r) := by
+  intro a
+  apply Iff.intro
+  . intro hr
+    exact hr a
+  . intro hr x
+    exact hr
+
+example : (∀ x, p x ∨ r) ↔ (∀ x, p x) ∨ r := by
+  apply Iff.intro
+  . intro h
+    by_cases hr:r
+    . apply Or.inr
+      exact hr
+    . apply Or.inl
+      intro x
+      have h1 : p x ∨ r := h x;
+      cases h1 with
+      | inl hp => exact hp
+      | inr hr => contradiction
+  . intro h
+    intro x
+    cases h with
+    | inl hp => exact Or.inl (hp x)
+    | inr hr => exact Or.inr hr
+
+example : (∀ x, r → p x) ↔ (r → ∀ x, p x) := by
+  apply Iff.intro
+  . intro h hr x
+    exact h x hr
+  . intro h x hr
+    exact h hr x
+
+
+variable (men : Type) (barber : men)
+variable (shaves : men → men → Prop)
+
+
+def pnotp {p} : ¬(p ↔ ¬p) := by
+  intro h
+  have np : ¬ p := (fun hp: p => (h.mp hp) hp);
+  exact np (h.mpr np)
+
+example (h : ∀ x : men, shaves barber x ↔ ¬ shaves x x) : False :=
+  pnotp (h barber)
+
 example (p q r : Prop) (hp : p)
         : (p ∨ q ∨ r) ∧ (q ∨ p ∨ r) ∧ (q ∨ r ∨ p) := by
   exact ⟨Or.inl hp, Or.inr (Or.inl hp), Or.inr (Or.inr hp)⟩
