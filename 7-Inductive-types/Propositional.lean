@@ -32,3 +32,17 @@ def eval (vars_eval : Nat → Bool) : Formula → Bool
   | .neg f => prop_neg (eval vars_eval f)
   | .and f1 f2 => prop_and (eval vars_eval f1) (eval vars_eval f2)
   | .or f1 f2 => prop_or (eval vars_eval f1) (eval vars_eval f2)
+
+
+def substitute (var_index : Nat) (substitute_for : Formula) (main_formula : Formula) : Formula :=
+  match main_formula with
+  | .var v =>
+    if v = var_index then substitute_for else .var v
+  | .bool b => .bool b
+  | .neg f => .neg (substitute var_index substitute_for f)
+  | .and f1 f2 => .and
+    (substitute var_index substitute_for f1)
+    (substitute var_index substitute_for f2)
+  | .or f1 f2 => .or
+    (substitute var_index substitute_for f1)
+    (substitute var_index substitute_for f2)
