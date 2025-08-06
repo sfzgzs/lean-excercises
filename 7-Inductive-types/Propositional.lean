@@ -46,3 +46,26 @@ def substitute (var_index : Nat) (substitute_for : Formula) (main_formula : Form
   | .or f1 f2 => .or
     (substitute var_index substitute_for f1)
     (substitute var_index substitute_for f2)
+
+
+def complexity_depth (f : Formula) : Nat :=
+  match f with
+  | .bool _ => 1
+  | .var _ => 1
+  | .neg f => complexity_depth f + 1
+  | .and f1 f2 =>
+      (Nat.max (complexity_depth f1) (complexity_depth f2)) + 1
+  | .or f1 f2 =>
+      (Nat.max (complexity_depth f1) (complexity_depth f2)) + 1
+
+
+
+def complexity_nodes_count (f : Formula) : Nat :=
+  match f with
+  | .bool _ => 1
+  | .var _ => 1
+  | .neg f => 1 + complexity_nodes_count f
+  | .and f1 f2 =>
+    1 + Nat.max (complexity_nodes_count f1) (complexity_nodes_count f2)
+  | .or f1 f2 =>
+    1 + Nat.max (complexity_nodes_count f1) (complexity_nodes_count f2)
