@@ -1,34 +1,34 @@
-namespace myProp
+namespace MyProp
 
 inductive Bool
-  | True
-  | False
+  | true
+  | false
 
-def PropAnd (b1 : Bool) (b2 : Bool) :=
+def prop_and (b1 : Bool) (b2 : Bool) :=
   match b1 with
-  | .True => b2
-  | .False => .False
+  | .true => b2
+  | .false => .false
 
-def PropOr (b1 : Bool) (b2 : Bool) :=
+def prop_or (b1 : Bool) (b2 : Bool) :=
   match b1 with
-  | .False => b2
-  | .True => .True
+  | .false => b2
+  | .true => .true
 
-def PropNeg (b : Bool) : Bool :=
+def prop_neg (b : Bool) : Bool :=
   match b with
-  | .True => .False
-  | .False => .True
+  | .true => .false
+  | .false => .true
 
 inductive Formula
-  | Bool : Bool → Formula
-  | Var : Nat → Formula
-  | Neg : Formula → Formula
-  | And : Formula → Formula → Formula
-  | Or : Formula → Formula → Formula
+  | bool : Bool → Formula
+  | var : Nat → Formula
+  | neg : Formula → Formula
+  | and : Formula → Formula → Formula
+  | or : Formula → Formula → Formula
 
-def Eval (varsEval : Nat → Bool) : Formula → Bool
-  | .Bool b => b
-  | .Var v => varsEval v
-  | .Neg f => PropNeg (Eval varsEval f)
-  | .And f1 f2 => PropAnd (Eval varsEval f1) (Eval varsEval f2)
-  | .Or f1 f2 => PropOr (Eval varsEval f1) (Eval varsEval f2)
+def eval (vars_eval : Nat → Bool) : Formula → Bool
+  | .bool b => b
+  | .var v => vars_eval v
+  | .neg f => prop_neg (eval vars_eval f)
+  | .and f1 f2 => prop_and (eval vars_eval f1) (eval vars_eval f2)
+  | .or f1 f2 => prop_or (eval vars_eval f1) (eval vars_eval f2)
