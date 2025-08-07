@@ -26,26 +26,26 @@ inductive Formula
   | and : Formula → Formula → Formula
   | or : Formula → Formula → Formula
 
-def eval (vars_eval : Nat → Bool) : Formula → Bool
+def eval (varsEval : Nat → Bool) : Formula → Bool
   | .bool b => b
-  | .var v => vars_eval v
-  | .neg f => prop_neg (eval vars_eval f)
-  | .and f1 f2 => prop_and (eval vars_eval f1) (eval vars_eval f2)
-  | .or f1 f2 => prop_or (eval vars_eval f1) (eval vars_eval f2)
+  | .var v => varsEval v
+  | .neg f => prop_neg (eval varsEval f)
+  | .and f1 f2 => prop_and (eval varsEval f1) (eval varsEval f2)
+  | .or f1 f2 => prop_or (eval varsEval f1) (eval varsEval f2)
 
 
-def substitute (var_index : Nat) (substitute_for : Formula) (main_formula : Formula) : Formula :=
-  match main_formula with
+def substitute (var_index : Nat) (subFor : Formula) (mainFormula : Formula) : Formula :=
+  match mainFormula with
   | .var v =>
-    if v = var_index then substitute_for else .var v
+    if v = var_index then subFor else .var v
   | .bool b => .bool b
-  | .neg f => .neg (substitute var_index substitute_for f)
+  | .neg f => .neg (substitute var_index subFor f)
   | .and f1 f2 => .and
-    (substitute var_index substitute_for f1)
-    (substitute var_index substitute_for f2)
+    (substitute var_index subFor f1)
+    (substitute var_index subFor f2)
   | .or f1 f2 => .or
-    (substitute var_index substitute_for f1)
-    (substitute var_index substitute_for f2)
+    (substitute var_index subFor f1)
+    (substitute var_index subFor f2)
 
 
 def complexity_depth (f : Formula) : Nat :=
