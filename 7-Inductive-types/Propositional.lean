@@ -34,18 +34,18 @@ def eval (varsEval : Nat → Bool) : Formula → Bool
   | .or f1 f2 => prop_or (eval varsEval f1) (eval varsEval f2)
 
 
-def substitute (var_index : Nat) (subFor : Formula) (mainFormula : Formula) : Formula :=
+def substitute (varIndex : Nat) (subFor : Formula) (mainFormula : Formula) : Formula :=
   match mainFormula with
   | .var v =>
-    if v = var_index then subFor else .var v
+    if v = varIndex then subFor else .var v
   | .bool b => .bool b
-  | .neg f => .neg (substitute var_index subFor f)
+  | .neg f => .neg (substitute varIndex subFor f)
   | .and f1 f2 => .and
-    (substitute var_index subFor f1)
-    (substitute var_index subFor f2)
+    (substitute varIndex subFor f1)
+    (substitute varIndex subFor f2)
   | .or f1 f2 => .or
-    (substitute var_index subFor f1)
-    (substitute var_index subFor f2)
+    (substitute varIndex subFor f1)
+    (substitute varIndex subFor f2)
 
 
 def complexity_depth (f : Formula) : Nat :=
