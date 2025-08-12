@@ -22,6 +22,12 @@ instance [ToString α] : ToString (Rectangle α) where
 instance : Shape Triangle Nat where
   area t := (t.base * t.height) / 2
 
+instance [ToString α] : ToString (Triangle α) where
+  toString r := "Triangle with base:" ++
+                (toString r.base) ++
+                " and height:" ++
+                (toString r.height)
+
 inductive Color where
   | red | green | blue
 deriving Repr
@@ -53,4 +59,5 @@ def myTriangle : Triangle Nat :=
 
 example : Shape.area myRectangle = 15 := rfl
 example : Shape.area myTriangle = 20 := rfl
+#eval toString myTriangle
 #eval toString myRectangle
