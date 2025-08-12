@@ -12,6 +12,13 @@ structure Triangle (α : Type u) where
 instance : Shape Rectangle Nat where
   area r := r.width * r.height
 
+
+instance [ToString α] : ToString (Rectangle α) where
+  toString r := "Rectangle with width:" ++
+                (toString r.width) ++
+                " and height:" ++
+                (toString r.height)
+
 instance : Shape Triangle Nat where
   area t := (t.base * t.height) / 2
 
@@ -29,6 +36,12 @@ instance : ToString Color where
 structure ColoredRectangle (α : Type u) extends Rectangle α where
   color : Color
 
+instance [ToString α] : ToString (ColoredRectangle α) where
+  toString r := "Colored ("++ (toString r.color) ++
+                ") " ++
+                (toString r.toRectangle)
+
+
 instance [Shape Rectangle α] : Shape ColoredRectangle α where
   area cr := Shape.area cr.toRectangle
 
@@ -40,3 +53,4 @@ def myTriangle : Triangle Nat :=
 
 example : Shape.area myRectangle = 15 := rfl
 example : Shape.area myTriangle = 20 := rfl
+#eval toString myRectangle
