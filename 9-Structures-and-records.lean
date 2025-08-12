@@ -19,6 +19,13 @@ inductive Color where
   | red | green | blue
 deriving Repr
 
+instance : ToString Color where
+  toString
+    | Color.red   => "red"
+    | Color.green => "green"
+    | Color.blue  => "blue"
+
+
 structure ColoredRectangle (α : Type u) extends Rectangle α where
   color : Color
 
